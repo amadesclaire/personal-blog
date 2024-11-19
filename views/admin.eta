@@ -1,0 +1,28 @@
+<div style="display: flex; flex-direction: column; gap: 15px; max-width: 800px; margin: auto;">
+    <% it.articles.forEach(function(article) { %>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+
+            <h3 style="margin: 0;">
+                <a href="article/<%= article.slug %>">
+                    <%= article.title %></h3>
+                </a>
+            
+            <div style="display: flex; gap: 10px;">
+                <a href="/edit/<%= article.slug %>">
+                    Edit
+                </a>
+                <a href="#" onclick="confirmDelete('<%= article.slug %>')" style="color:red;">
+                    Delete
+                </a>
+            </div>
+
+        </div>
+    <% }) %>
+</div>
+<script>
+  function confirmDelete(slug) {
+    if (confirm("Are you sure you want to delete this article?")) {
+      window.location.href = `/delete/${slug}`;
+    }
+  }
+</script>

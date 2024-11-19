@@ -1,0 +1,8 @@
+<div style="display:flex; flex-direction: column">
+    <% it.articles.forEach(function(article) { %>
+        <a href="/article/<%= article.slug %>" style="display:flex;justify-content:space-between; align-items:end;">    
+            <h3><%= article.title %></h3>
+            <h4><%= article.date %></h4>
+        </a>
+    <% }) %>
+</div>

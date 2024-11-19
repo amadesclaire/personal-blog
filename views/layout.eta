@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= it.title %></title>
+    <style>
+        body {
+            max-width: 560px;
+            margin: 20px auto;
+            font-family: ui-monospace, monospace;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/admin">Admin</a>
+            <a href="/new">New</a>
+        </nav>
+        <h1><%= it.title %></h1>
+
+    </header>
+
+    <main>
+        <%~ it.body %>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 My Blog</p>
+    </footer>
+</body>
+</html>

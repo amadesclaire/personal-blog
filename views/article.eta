@@ -1,0 +1,18 @@
+<div style="max-width: 800px; margin: auto;">
+
+    <small style="color: gray;"><%= it.date %></small>
+    
+    <hr />
+    <style>
+        blockquote {
+            border-left: 2px solid black;
+            margin-left: 0;
+            padding-left: 12px;
+        }
+    </style>
+    <div style="margin: 32px 0;">
+        <%~ it.content %>
+    </div>
+    
+    <a href="/" style="margin-top: 40px; color: blue; text-decoration: underline;">&larr; Back to Articles</a>
+</div>
