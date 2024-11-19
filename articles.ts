@@ -1,6 +1,7 @@
 import Markdown from "./markdown.ts";
 import type { Article } from "./types.ts";
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
+import { articleCache } from "./cache.ts";
 
 /*
  * Helper function to handle file reading and parsing errors
@@ -56,15 +57,20 @@ export const getArticleBySlug = async (
   articlesDir: string,
   slug: string
 ): Promise<Article | null> => {
+  if (articleCache.has(slug)) {
+    return articleCache.get(slug) || null;
+  }
   const filePath = path.join(articlesDir, `${slug}.md`);
   try {
     const { metadata, markdown } = await Markdown.extractFrontMatter(filePath);
-    return {
+    const article = {
       slug,
       title: metadata?.title,
       date: metadata?.date,
       content: markdown,
     };
+    articleCache.set(slug, article);
+    return article;
   } catch (error) {
     return handleError(error, "404 Article not found");
   }

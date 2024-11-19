@@ -3,6 +3,7 @@ import { getArticles, getArticleBySlug } from "./articles.ts";
 import { renderPage } from "./render.ts";
 import Markdown from "./markdown.ts";
 import { generateCsrfToken, validateCsrfToken } from "./csrf.ts";
+import { articleCache } from "./cache.ts";
 
 const ARTICLES_DIR = "./articles";
 
@@ -116,6 +117,7 @@ const handleRequest = async (req: Request): Promise<Response> => {
         `${ARTICLES_DIR}/${updateSlug}.md`,
         updatedArticle
       );
+      articleCache.invalidate(updateSlug);
       return redirectToAdmin(req);
     }
     // New ***************************************************************
@@ -151,6 +153,7 @@ const handleRequest = async (req: Request): Promise<Response> => {
     case "delete": {
       const deleteSlug = parts[1];
       await Deno.remove(`${ARTICLES_DIR}/${deleteSlug}.md`);
+      articleCache.invalidate(deleteSlug);
       return redirectToAdmin(req);
     }
     default: {
