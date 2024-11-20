@@ -54,7 +54,7 @@ const handleRequest = async (req: Request): Promise<Response> => {
     case "": {
       const articles = await getArticles(ARTICLES_DIR);
       const cleanArticles = articles
-        .map(({ title, slug, date }) => ({ title, slug, date }))
+        ?.map(({ title, slug, date }) => ({ title, slug, date }))
         .sort(
           (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
         );
