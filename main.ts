@@ -72,7 +72,7 @@ const handleRequest = async (req: Request): Promise<Response> => {
     }
     // Admin ************************************************************
     case "admin": {
-      const allArticles = (await getArticles(ARTICLES_DIR)).sort(
+      const allArticles = (await getArticles(ARTICLES_DIR))?.sort(
         (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
       );
       return renderPage("admin", {

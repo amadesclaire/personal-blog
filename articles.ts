@@ -1,6 +1,6 @@
 import Markdown from "./markdown.ts";
 import type { Article } from "./types.ts";
-import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
+import * as path from "@std/path";
 import { articleCache } from "./cache.ts";
 
 /*
@@ -20,34 +20,43 @@ const handleError = (error: unknown, message: string): null => {
 /*
  * Retrieves all articles from the specified directory
  */
-export const getArticles = async (articlesDir: string): Promise<Article[]> => {
-  const files: Deno.DirEntry[] = [];
-  for await (const file of Deno.readDir(articlesDir)) {
-    if (file.isFile && file.name.endsWith(".md")) {
-      files.push(file);
-    }
-  }
+export const getArticles = async (
+  articlesDir: string
+): Promise<Article[] | null> => {
+  try {
+    const files: Deno.DirEntry[] = [];
 
-  const articles = await Promise.all(
-    files.map(async (file) => {
-      const filePath = path.join(articlesDir, file.name);
-      try {
-        const { metadata, markdown } = await Markdown.extractFrontMatter(
-          filePath
-        );
-        return {
-          slug: file.name.replace(".md", ""),
-          title: metadata?.title,
-          date: metadata?.date,
-          content: markdown,
-        };
-      } catch (error) {
-        return handleError(error, "404 Articles not found");
+    for await (const file of Deno.readDir(articlesDir)) {
+      if (file.isFile && file.name.endsWith(".md")) {
+        files.push(file);
       }
-    })
-  );
+    }
 
-  return articles.filter(Boolean) as Article[];
+    const articles = await Promise.all(
+      files.map(async (file) => {
+        const filePath = path.join(articlesDir, file.name);
+        try {
+          const { metadata, markdown } = await Markdown.extractFrontMatter(
+            await Deno.readTextFile(filePath)
+          );
+          return {
+            slug: file.name.replace(".md", ""),
+            title: metadata?.title,
+            date: metadata?.date,
+            content: markdown,
+          };
+        } catch (error) {
+          console.error(`Error processing file ${file.name}:`, error);
+          return null;
+        }
+      })
+    );
+
+    return articles.filter(Boolean) as Article[];
+  } catch (error) {
+    console.error(`Error reading articles directory: ${articlesDir}`, error);
+    return null;
+  }
 };
 
 /*
@@ -72,6 +81,7 @@ export const getArticleBySlug = async (
     articleCache.set(slug, article);
     return article;
   } catch (error) {
+    console.error(`Error reading article file ${slug}.md:`, error);
     return handleError(error, "404 Article not found");
   }
 };
